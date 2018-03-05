@@ -7,7 +7,6 @@ var ErrorForm = SpreadsheetApp.openById("1e3zJ-_UXJuhvjOSomgsnCcYaN1D-_AGVGsbjcB
 
 function Lemon() {
   // Automatically organizes new Team info from jotform onto Master List spreadsheet
-  
   // Getting Team information
   var TeamIndex = TeamInfo.getLastRow(); // Index of new Team info           
   var MasterListIndex = MasterList.getSheetByName("Master List").getLastRow();                  // Index of Master List to input new team
@@ -80,7 +79,6 @@ function LookForName(name, list) {
 
 function RulesAndWaiversCheck() {
   // Automatically checks off person who has submitted their Rules and Waivers Form
-  
   // Declaring Variables
   var Members = MasterList.getRange("B2:B"+MasterList.getLastRow()).getValues();                                         // List of people already signed up on relay on Master List
   var Person = RulesAndWaivers.getRange("C"+RulesAndWaivers.getLastRow()+":D"+RulesAndWaivers.getLastRow()).getValues(); // Person who submitted form
@@ -102,7 +100,6 @@ function RulesAndWaiversCheck() {
 
 function HealthCheck() {
   // Automatically checks off person who has submitted their Health Form
-  
   // Declaring Variables
   var Members = MasterList.getRange("B2:B"+MasterList.getLastRow()).getValues();              // List of people already signed up on relay on Master List
   var Person = Health.getRange("C"+Health.getLastRow()+":D"+Health.getLastRow()).getValues(); // Person who submitted form
