@@ -9,6 +9,6 @@ The organization that runs the Chelmsford 24 Hour Relay is called LIME (Leadersh
 <h3> How does it work? </h3>
 1. People sign up on Jotform
 
-2. Jotform sends the forms’ information into a Google spreadsheet 
+2. Jotform sends the forms’ information into a Google spreadsheet
 
 3. The spreadsheet information is then organized onto the formatted Master List through Lemon
