@@ -1,4 +1,4 @@
-// Opening Spreadsheets
+// Opening Spreadsheets (currently 2018 spreadsheets)
 var MasterList = SpreadsheetApp.openById("1NSXptUb7xLx7dl8M19sUiut3PaeGTsJNlbdlnTdfy9s");
 var TeamInfo = SpreadsheetApp.openById("1vG0zlJRyMJHFvi1f8hRBIjFOF7wTN7PllLWfLBPnmFA");
 var RulesAndWaivers = SpreadsheetApp.openById("1TxTCjQ67K6bx2_VWOKVxN4a1VK1ypRDkTWhLi-8wB-g");
@@ -117,33 +117,51 @@ function LookForName(name, list) {
     if (name.toUpperCase() == list[n][0].toUpperCase())
       return n;
   }
+  
+  // Returns index of name on list if present, if not, returns -1
   return -1;
 }
 
 
 function ReportError(index, errorDesc, personAffected) {
+  // If name on submitted form isn't found, submits error onto Error Form spreadsheet
   var timestamp = Utilities.formatDate(new Date(), "GMT-04:00", "MM-dd-yyyy HH:mm:ss");
   var error = [[timestamp, errorDesc, personAffected]];
   ErrorForm.getRange("A"+index+":C"+index).setValues(error);
+  
+  // Formatting
   ErrorForm.getRange("A"+index).setHorizontalAlignment("left");
 }
 
-
 function checkAndResolveError(person){
-  // Checks error form for errors for specified person and corrects them
+  /**
+  /* Checks error form for errors for specified person and corrects them
+  /* Precondition: Specified person is known to be present on Master List
+   */ 
+  // Checking if person has any errors on Error Form to be resolved
   var errorList = ErrorForm.getRange("C2:C"+ErrorForm.getLastRow()).getValues();
   var errorFormIndex = LookForName(person, errorList)+2;
 
   if (errorFormIndex >= 2) {
+    // If present on Error Form, looks for person's index on Master List to be resolved
     var masterListMembers = MasterList.getRange("B2:B"+MasterList.getLastRow()).getValues(); // List of people already signed up on relay on Master List
     var masterListIndex = LookForName(person, masterListMembers)+2;
     var errorType = ErrorForm.getRange("B"+errorFormIndex).getValue().charAt(0);
     
     // Checking off person on Master list
-    if (errorType === 'R')                                                    // Rules and Waivers
-      MasterList.getRange("Master List!D"+(masterListIndex)).setValue('X');  
-    else if (errorType === 'H')                                               // Health Form
-      MasterList.getRange("Master List!E"+(masterListIndex)).setValue('X'); 
+    if (errorType === 'H'){                                                        // Health Form
+      // Getting person's grade from Health Form
+      var healthList = Health.getRange("C2:D"+Health.getLastRow()).getValues();
+      healthList = [[(n[0]+" "+n[1])] for each (n in healthList)];
+      var healthFormIndex = LookForName(person, healthList)+2;
+      var grade = Health.getRange("E"+healthFormIndex).getValue();
+      
+      // Resolving error
+      MasterList.getRange("Master List!C"+masterListIndex).setValue(grade);
+      MasterList.getRange("Master List!E"+masterListIndex).setValue('X'); 
+    }
+    else if (errorType === 'R')                                                    // Rules and Waivers
+      MasterList.getRange("Master List!D"+masterListIndex).setValue('X');  
     
     // Deleting error and checking for other errors
     DeleteError(errorFormIndex);
@@ -332,7 +350,8 @@ function OrganizeAll() {
 
   
   /* TODO
-  - Update list comprehension to javascript standards     
+  - Update list comprehension to javascript standards (array.map, etc.)    
+  - refactor code properly
   
   Other cool features
   - Decorating the docs, formatting
